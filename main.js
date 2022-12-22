@@ -36,10 +36,12 @@ window.addEventListener('load', function() {
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
             this.audio = new Audio('./assets/Obama.mp3');
-            this.lives = 5;
+            this.maxLives = 5;
+            this.lives = this.maxLives;
             this.winningScore = 40;
         }
         update(deltaTime) {
+
             this.time += deltaTime;
             if(this.time > this.maxTime) this.gameOver = true;
             this.background.update();
@@ -89,9 +91,23 @@ window.addEventListener('load', function() {
             else if(this.speed > 0) this.enemies.push(new ClimbingEnemy(this));
             this.enemies.push(new FlyingEnemy(this));
         }
+        restartGame() { 
+            this.player = new Player(this);
+            this.background = new Background(this);
+            this.input = new InputHandler(this);
+            this.UI = new UI(this);
+            this.enemies = [];
+            this.time = 0;
+            this.collisions = [];
+            this.particles = [];
+            this.lives = this.maxLives;
+            this.score = 0;
+            this.gameOver = false;
+            animate(0);
+        }
     }
 
-    const game = new Game(canvas.width, canvas.height);
+    let game = new Game(canvas.width, canvas.height);
     let lastTime = 0;
 
     function animate(timeStamp) {
@@ -101,6 +117,15 @@ window.addEventListener('load', function() {
         game.update(deltaTime);
         game.draw(ctx);
         if(!game.gameOver) requestAnimationFrame(animate);
+        if(game.gameOver) {
+            window.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && game.gameOver) {
+                    console.log('nice');
+                    game.restartGame();
+                }
+            });
+        }
+        
     }
     animate(0);
 });

@@ -13,6 +13,9 @@ export class InputHandler {
                 this.keys.push(e.key);
             } else if (e.key === 'Tab') {
                 this.keys = [];
+            } else if (e.key === 'Enter' && this.game.gameOver) {
+                console.log('nice');
+                this.game.restartGame(this.game);
             } else if (e.key === 'd') this.game.debug = !this.game.debug;
         });
         window.addEventListener('keyup', e => {
